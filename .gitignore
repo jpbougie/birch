@@ -1,0 +1,4 @@
+config/sift.rb
+.sass-cache/*
+.DS_Store
+log/*
