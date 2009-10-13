@@ -42,6 +42,7 @@ class Comment
   include MongoMapper::Document
   
   key :body, String, :required => true
+  key :user_id, String
   
   timestamps!
   
@@ -62,15 +63,20 @@ class Project
   include MongoMapper::Document
 
   key :name, :required => true
-  key :description
+  key :description, String
+  key :temp, Boolean
+  key :user_id, String
   
   belongs_to :user
+  many :iterations
   
   timestamps!
 end
 
 class Iteration
   include MongoMapper::Document
+  
+  key :project_id, String
   
   timestamps!
   
@@ -82,10 +88,11 @@ class Alternative
   
   key :file, String
   key :description, String
+  key :iteration_id, String
   
   timestamps!
   
-  belongs_to :round
+  belongs_to :iteration
   many :comments
 end
 
@@ -93,6 +100,7 @@ class Event
   include MongoMapper::Document
   
   key :type, String
+  key :user_id, String
   
   timestamps!
   
