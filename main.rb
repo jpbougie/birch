@@ -14,7 +14,7 @@ require 'mongomapper'
 $: << File.join(File.dirname(__FILE__), 'lib')
 
 configure do
-  MongoMapper.connection = XGen::Mongo::Driver::Mongo.new('localhost')
+  MongoMapper.connection = Mongo::Connection.new('localhost')
   MongoMapper.database = "dev"
   
   Compass.configuration do |config|
@@ -25,7 +25,7 @@ end
 
 enable :sessions
 
-require 'birch/models'
+require 'models'
 
 get "/stylesheets/:name.css" do |name|
   content_type 'text/css'
@@ -77,13 +77,31 @@ get '/create' do
 end
 
 post '/create' do
+  @user = User.find(session[:user])
+  p = Project.find(params[:project])
+  p.user = @user
+  p.name = params[:name]
+  p.description = params[:description]
+  p.save
   
+  redirect "/projects/#{p.id}"
 end
 
 post '/upload' do
-  params.to_s
-end
-
-post '/upload_completed' do
-  params.to_s
+  
+  content_type :json
+  
+  #@user = User.find(session[:user])
+  project = if params[:project] then
+    Project.find(params[:project])
+  else
+    Project.create :name => "Untitled", :temp => true
+  end
+  
+  iteration = project.iterations.last || project.iterations.create
+  
+  alternative = iteration.alternatives.create :asset => params[:"asset.path"], :name => params[:"asset.name"]
+  
+  {:project_id => project.id, :alternative_id => alternative.id}.to_json
+  
 end

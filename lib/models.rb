@@ -81,12 +81,14 @@ class Iteration
   timestamps!
   
   belongs_to :project
+  many :alternatives
 end
 
 class Alternative
   include MongoMapper::Document
   
-  key :file, String
+  key :asset, String
+  key :name, String
   key :description, String
   key :iteration_id, String
   
