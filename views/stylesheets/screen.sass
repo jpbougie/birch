@@ -1,0 +1,30 @@
+@import compass/reset.sass
+@import compass/utilities/lists.sass
+@import compass/utilities/general.sass
+@import blueprint/screen.sass
+@import compass/utilities/links.sass
+
++global-reset
++blueprint
+
+=hidden
+  display: none
+
+body
+  +container
+  
+#header
+  +column(24, true)
+  margin-top: 10px
+  
+#content
+  +column(24, true)
+  
+  #stream
+    +column(10)
+  
+  #projects
+    +column(14, true)
+
+#chooseUploader
+  position: absolute

@@ -1,0 +1,12 @@
+%h2 Sign up to Project Birch
+%form{:method => "POST"}
+  Name
+  %input#name{:type => "text", :name => "user[name]"}
+  %br
+  E-mail
+  %input#email{:type => "text", :name => "user[email]"}
+  %br
+  Password
+  %input#password{:type => "password", :name => "user[password]"}
+  %br
+  %input{:type => "submit", :value => "sign up"}

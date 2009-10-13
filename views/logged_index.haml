@@ -1,0 +1,13 @@
+%h2= "Welcome, #{@user.name}"
+#stream
+  %h3 Activity Stream
+#projects
+  %h3 Projects
+  - if !@user.projects.empty?
+    %ul
+      - for project in @user.projects
+        %li= project.name
+  - else
+    No projects yet.
+    %a{:href => "/create"} Create a new one
+    
