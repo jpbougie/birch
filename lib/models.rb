@@ -89,6 +89,7 @@ class Alternative
   
   key :asset, String
   key :name, String
+  key :content_type, String
   key :description, String
   key :iteration_id, String
   

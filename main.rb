@@ -100,8 +100,21 @@ post '/upload' do
   
   iteration = project.iterations.last || project.iterations.create
   
-  alternative = iteration.alternatives.create :asset => params[:"asset.path"], :name => params[:"asset.name"]
+  alternative = iteration.alternatives.create :asset => params[:"asset.path"], :name => params[:"asset.name"], :content_type => params[:"asset.content_type"]
   
   {:project_id => project.id, :alternative_id => alternative.id}.to_json
   
+end
+
+get "/project/:id/" do
+  @project = Project.find(params[:id])
+  
+  haml :project
+end
+
+get "/project/:prid/asset/:aid" do
+  @project = Project.find(params[:prid])
+  @alternative = @project.iterations.last.alternatives.find(params[:aid])
+  
+  send_file(@alternative.asset, :type => @alternative.content_type)
 end
