@@ -2,6 +2,7 @@ class User
   include MongoMapper::Document
 
   key :name, String, :required => true, :unique => true
+  key :username, String, :required => true, :unique => true
   key :email, String, :required => true, :unique => true
   key :hashed_password, String, :required => true
   key :salt, String
@@ -16,11 +17,6 @@ class User
   
   def self.encrypt(pass, salt)
     Digest::SHA1.hexdigest([pass,salt].join("-"))
-  end
-  
-  def self.authenticate(email, pass)
-    user = User.find_by_email email
-    return user if user and user.hashed_password == User.encrypt(pass, user.salt)
   end
   
   def self.random_salt
@@ -66,11 +62,20 @@ class Project
   key :description, String
   key :temp, Boolean
   key :user_id, String
+  key :slug, String, :unique => true
+  
+  before_save :update_slug
   
   belongs_to :user
   many :iterations
   
   timestamps!
+  
+  private
+  
+  def update_slug
+    write_attribute('slug', self.name.downcase.gsub(/\W/, '-'))
+  end
 end
 
 class Iteration

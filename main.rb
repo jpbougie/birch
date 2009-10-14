@@ -26,6 +26,7 @@ end
 enable :sessions
 
 require 'models'
+require 'auth'
 
 get "/stylesheets/:name.css" do |name|
   content_type 'text/css'
@@ -35,8 +36,7 @@ get "/stylesheets/:name.css" do |name|
 end
 
 get '/' do
-  if session[:user]
-    @user = User.find(session[:user])
+  if signed_in?
     haml :logged_index
   else
     haml :default_index
@@ -51,7 +51,7 @@ post '/signup' do
   @user = User.new params[:user]
     
   if @user.save
-    session[:user] = @user.id
+    login(@user)
     redirect "/"
   else
     haml :sign_up
@@ -62,24 +62,30 @@ get '/login' do
   haml :login
 end
 
-post '/login' do
-  @user = User.authenticate(params[:email], params[:password])
-  if @user
-    session[:user] = @user.id
+post '/login'  do
+  user = authenticate(params[:username], params[:password])
+  if user
+    login(user)
     redirect(params[:next] || '/')
   else
     haml :login
   end
 end
 
+get '/logout' do
+  logout
+  redirect '/'
+end
+
 get '/create' do
+  login_required
   haml :create
 end
 
 post '/create' do
-  @user = User.find(session[:user])
+  login_required
   p = Project.find(params[:project])
-  p.user = @user
+  p.user = current_user
   p.name = params[:name]
   p.description = params[:description]
   p.save
@@ -91,7 +97,6 @@ post '/upload' do
   
   content_type :json
   
-  #@user = User.find(session[:user])
   project = if params[:project] then
     Project.find(params[:project])
   else
@@ -106,15 +111,16 @@ post '/upload' do
   
 end
 
-get "/project/:id/" do
-  @project = Project.find(params[:id])
+get "/:user/:project" do
+  @user = User.find_by_username params[:user] || not_found
+  @project = @user.projects.first(:conditions => {:slug => params[:project]}) || not_found("Project could not be found")
   
   haml :project
 end
 
-get "/project/:prid/asset/:aid" do
+get "/:user/:project/asset/:asset" do
   @project = Project.find(params[:prid])
-  @alternative = @project.iterations.last.alternatives.find(params[:aid])
+  @alternative = @project.iterations.last.alternatives.find(params[:asset])
   
   send_file(@alternative.asset, :type => @alternative.content_type)
 end

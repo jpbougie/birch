@@ -1,0 +1,11 @@
+%h2
+  = @project.name
+  %span#dephasis= "iteration ##{@project.iterations.count}"
+
+%p= @project.description
+
+%ul#alternatives
+  - for alt in @project.iterations.last.alternatives
+    %li
+      %a{:href => "/#{@project.user.username}/#{@project.slug}/alternative/#{alt.id}"}
+        %img{:src => "/asset/thumb/#{alt.id}.jpg", :description => "#{alt.name}"}

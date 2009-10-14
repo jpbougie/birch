@@ -1,11 +1,11 @@
-%h2= "Welcome, #{@user.name}"
+%h2= "Welcome, #{current_user.name}"
 #stream
   %h3 Activity Stream
 #projects
   %h3 Projects
-  - if !@user.projects.empty?
+  - if !current_user.projects.empty?
     %ul
-      - for project in @user.projects
+      - for project in current_user.projects
         %li
           %a{:href => "/project/#{project.id}"}= project.name
   - else
