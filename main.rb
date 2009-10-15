@@ -8,10 +8,13 @@ require 'haml'
 gem 'chriseppstein-compass'
 require 'compass'
 
-gem 'jnunemaker-mongomapper'
-require 'mongomapper'
+require 'mongo_mapper'
 
 $: << File.join(File.dirname(__FILE__), 'lib')
+
+require 'carrierwave'
+require 'carrierwave/orm/mongomapper'
+
 
 configure do
   MongoMapper.connection = Mongo::Connection.new('localhost')
@@ -25,6 +28,7 @@ end
 
 enable :sessions
 
+require 'upload'
 require 'models'
 require 'auth'
 
@@ -103,9 +107,12 @@ post '/upload' do
     Project.create :name => "Untitled", :temp => true
   end
   
-  iteration = project.iterations.last || project.iterations.create
+  iteration = project.iterations.last(:order => "created_at desc") || project.iterations.create
   
-  alternative = iteration.alternatives.create :asset => params[:"asset.path"], :name => params[:"asset.name"], :content_type => params[:"asset.content_type"]
+  alternative = iteration.alternatives.create :name => params[:"asset.name"]
+  
+  alternative.asset = File.new(params[:"asset.path"])
+  alternative.save!
   
   {:project_id => project.id, :alternative_id => alternative.id}.to_json
   
@@ -120,7 +127,7 @@ end
 
 get "/:user/:project/asset/:asset" do
   @project = Project.find(params[:prid])
-  @alternative = @project.iterations.last.alternatives.find(params[:asset])
+  @alternative = @project.iterations.last(:order => "created_at desc").alternatives.find(params[:asset])
   
   send_file(@alternative.asset, :type => @alternative.content_type)
 end

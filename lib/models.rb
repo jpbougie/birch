@@ -82,21 +82,31 @@ class Iteration
   include MongoMapper::Document
   
   key :project_id, String
+  key :order, Integer
   
   timestamps!
   
+  validates_uniqueness_of :order, :scope => :project_id
   belongs_to :project
   many :alternatives
+  
+  before_save :set_order
+  
+  def set_order
+    if new?
+      write_attribute('order', self.project.iterations.count + 1)
+    end
+  end
 end
 
 class Alternative
   include MongoMapper::Document
   
-  key :asset, String
   key :name, String
-  key :content_type, String
   key :description, String
   key :iteration_id, String
+  
+  mount_uploader :asset, AssetUploader
   
   timestamps!
   

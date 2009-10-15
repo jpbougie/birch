@@ -5,7 +5,7 @@
 %p= @project.description
 
 %ul#alternatives
-  - for alt in @project.iterations.last.alternatives
+  - for alt in @project.iterations.last(:order => "created_at desc").alternatives
     %li
       %a{:href => "/#{@project.user.username}/#{@project.slug}/alternative/#{alt.id}"}
         %img{:src => "/asset/thumb/#{alt.id}.jpg", :description => "#{alt.name}"}
