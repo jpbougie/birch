@@ -1,0 +1,61 @@
+@import 960/grid.sass
+@import baseline/form.sass
+
++baseline-form
+
+#create
+
+  +alpha
+  +omega
+  +grid(16, 16)
+  padding: 17px
+  background: #f5f5f5
+  border: 1px solid #ccc
+  
+  h3
+    margin-top: 0px
+    
+  h4
+    font-size: 13px
+    color: #c5c5c5
+    text-transform: lowercase
+    
+  #queue
+    border: 1px solid #ccc
+    background: white
+    display: none
+    margin-top: 17px
+    width: 300px
+    padding: 9px
+    
+    .uploadifyQueueItem
+      border-bottom: 1px solid #c5c5c5
+      
+      .fileName
+        font-family: Times New Roman, sans-serif
+        font-style: italic
+        letter-spacing: 0.1em
+    
+    .cancel
+      float: right
+      margin-left: 10px
+      
+  .disabled
+    border-bottom: 0
+    color: #c5c5c5
+    
+  #describe-form
+    border: 1px solid #ccc
+    background: white
+    margin-top: 17px
+    width: 300px
+    padding: 9px
+    
+    label
+      font-family: Times New Roman, sans-serif
+      font-style: italic
+      letter-spacing: 0.1em
+      +multilinex(6)
+      
+    input:active, input:focus
+      background-color: #FEFFEA

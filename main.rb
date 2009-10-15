@@ -89,13 +89,14 @@ end
 
 post '/create' do
   login_required
-  p = Project.find(params[:project])
+  p = Project.find(params[:project][:id])
   p.user = current_user
-  p.name = params[:name]
-  p.description = params[:description]
+  p.name = params[:project][:name]
+  p.description = params[:project][:description]
+  p.temp = false
   p.save
   
-  redirect "/projects/#{p.id}"
+  redirect "/#{current_user.username}/#{p.slug}"
 end
 
 post '/upload' do
@@ -105,10 +106,13 @@ post '/upload' do
   project = if params[:project] then
     Project.find(params[:project])
   else
-    Project.create :name => "Untitled", :temp => true
+    Project.create :name => Time.now.strftime("Untitled %x %X"), :temp => true
   end
   
-  iteration = project.iterations.first(:order => "created_at desc") || project.iterations.create
+  project.save
+  
+  iteration = project.iterations.first(:order => "created_at desc") || project.iterations.create(:order => 1)
+  iteration.save
   
   alternative = iteration.alternatives.create :name => params[:"asset.name"], :filename => params[:"asset.name"]
   

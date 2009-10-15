@@ -1,19 +1,36 @@
-%section
-  %h2 Create a project
 
-  %section#create
-    %h4 Step 1
-    %h3
-      %a#browse-link{:href => "/upload"} Choose pictures
-      %span#choose
-    %h4 Step 2
-    %h3 
-      %a#launch-upload{:href => "/upload"} Upload Pictures
+%h2 Start a project
 
-    %h4 Step 3
-    %h3 Describe & Annotate
+#create
+  %h4 Step 1
+  %h3
+    %a#choose{:href => "/upload"} Choose pictures
+  #queue
+  %h4 Step 2
+  %h3 
+    %a#launch-upload.disabled{:href => "/upload"} Upload Pictures
+
+  %h4 Step 3
+  %h3.disabled
+    Describe
+    %span.amp &
+    Annotate
   
-    %h4 Step 4
-    %h3 Invite others to collaborate
-  
+  #describe-form
+    %form{:method => "POST"}
+      %input#prid{:type => "hidden", :name => "project[id]", :value => ""}
+      %label.width2
+        Give the project a name
+        %input#project_name{:type => "text", :name => "project[name]"}
+      %label.width2
+        and an optional description
+        %textarea#project_description{:name => "project[description]"}
+      %label
+        %button#create-project.button create the project
+
+  ~# %h4 Step 4
+  ~# %h3 Invite others to collaborate
+
+%script{ :src => "/js/swfobject.js", :type => "text/javascript", :charset => "utf-8" }.
+%script{ :src => "/js/jquery.uploadify.v2.1.0.min.js", :type => "text/javascript", :charset => "utf-8" }.
 %script{:type => "text/javascript", :src => "js/upload.js"}

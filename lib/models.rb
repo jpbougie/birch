@@ -74,7 +74,7 @@ class Project
   private
   
   def update_slug
-    write_attribute('slug', self.name.downcase.gsub(/\W/, '-'))
+    write_attribute('slug', self.name.downcase.gsub(/[\W\/]/, '-'))
   end
 end
 

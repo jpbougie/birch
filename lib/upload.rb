@@ -12,6 +12,6 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
   
   version :thumb do
-    process :crop_resized => [220, 124]
+    process :crop_resized => [220, 144]
   end
 end

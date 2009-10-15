@@ -3,15 +3,19 @@
 #featured
   .inner
     %h3
-      Featured Project
+      featured project
     %h1= current_user.projects.first(:order => "created_at desc").name
 
 #stream
   %h3 Activity Stream
+  %p.blank
+    No activities in the stream yet.
 #projects
   %h3
     Projects
-    %a.button{:href => "/create"} New Project
+    %a.button{:href => "/create"}
+      %span.plus +
+      Start a new project
   - if !current_user.projects.empty?
     %ul
       - for project in current_user.projects
