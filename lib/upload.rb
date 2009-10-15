@@ -4,7 +4,7 @@ class AssetUploader < CarrierWave::Uploader::Base
   storage :file
   
   def filename
-    model.name
+    model.filename
   end
   
   def store_dir
@@ -12,6 +12,6 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
   
   version :thumb do
-    process :crop_resized => [150, 150]
+    process :crop_resized => [220, 124]
   end
 end

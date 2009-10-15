@@ -2,11 +2,12 @@ require 'rubygems'
 
 require 'sinatra'
 
-gem 'haml-edge'
 require 'haml'
+require 'sass'
 
-gem 'chriseppstein-compass'
 require 'compass'
+require 'ninesixty'
+require 'baseline'
 
 require 'mongo_mapper'
 
@@ -107,9 +108,9 @@ post '/upload' do
     Project.create :name => "Untitled", :temp => true
   end
   
-  iteration = project.iterations.last(:order => "created_at desc") || project.iterations.create
+  iteration = project.iterations.first(:order => "created_at desc") || project.iterations.create
   
-  alternative = iteration.alternatives.create :name => params[:"asset.name"]
+  alternative = iteration.alternatives.create :name => params[:"asset.name"], :filename => params[:"asset.name"]
   
   alternative.asset = File.new(params[:"asset.path"])
   alternative.save!
@@ -119,15 +120,11 @@ post '/upload' do
 end
 
 get "/:user/:project" do
-  @user = User.find_by_username params[:user] || not_found
-  @project = @user.projects.first(:conditions => {:slug => params[:project]}) || not_found("Project could not be found")
+  @user = User.find_by_username params[:user]
+  not_found("User does not exist") if @user.nil?
+  
+  @project = @user.projects.first(:conditions => {:slug => params[:project]})
+  not_found("Project could not be found") if @project.nil?
   
   haml :project
-end
-
-get "/:user/:project/asset/:asset" do
-  @project = Project.find(params[:prid])
-  @alternative = @project.iterations.last(:order => "created_at desc").alternatives.find(params[:asset])
-  
-  send_file(@alternative.asset, :type => @alternative.content_type)
 end

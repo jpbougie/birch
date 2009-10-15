@@ -64,7 +64,7 @@ class Project
   key :user_id, String
   key :slug, String, :unique => true
   
-  before_save :update_slug
+  before_validation :update_slug
   
   belongs_to :user
   many :iterations
@@ -103,6 +103,7 @@ class Alternative
   include MongoMapper::Document
   
   key :name, String
+  key :filename, String
   key :description, String
   key :iteration_id, String
   

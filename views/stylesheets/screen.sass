@@ -1,30 +1,100 @@
 @import compass/reset.sass
-@import compass/utilities/lists.sass
 @import compass/utilities/general.sass
-@import blueprint/screen.sass
 @import compass/utilities/links.sass
 
+@import 960/grid.sass
+
 +global-reset
-+blueprint
+
+@import baseline/modules/base.sass
++baseline-base
+
+@import baseline/type.sass
++baseline-type
 
 =hidden
   display: none
-
-body
-  +container
   
-#header
-  +column(24, true)
-  margin-top: 10px
+#bar
+  background-color: black
+  padding: 0px 0px 3px 5px
+  margin-bottom: 0.5em
   
+  a
+    color: white
+    text-decoration: none
+    font-weight: bold
+  
+  .inner
+    +grid-system(16)
+    +clearfix
+    +grid-children
+  
+    #logo
+      +alpha
+      +grid(10, 16)
+      letter-spacing: 0.2em
+      
+      span.offcolor
+        color: #2F72FF
+        
+      #typelogo
+        font-family: "Century Gothic"
+        letter-spacing: -0.2em
+        margin-right: 10px
+        
+        #ll, #rr
+          font-size: 0.7em
+          position: relative
+          top: -1px
+        
+        #l, #r
+          font-size: 1.1em
+          
+        #c
+          font-size: 1.5em
+          position: relative
+          top: 1px
+    #options
+      +omega
+      +grid-prefix(3, 16)
+      +grid(3, 16)
+      padding-top: 6px
+      #logout
+        margin-left: 5px
+        color: #D71304
 #content
-  +column(24, true)
+  +grid-system(16)
+  +clearfix
+  +grid-children
   
-  #stream
-    +column(10)
-  
-  #projects
-    +column(14, true)
+  h2
+    +alpha
+    +omega
+    +grid(16, 16)
+    font-weight: bold
+    
+    .dephasis
+      color: #999
+      font-size: 22px
+      font-weight: normal
+    
+a
+  color: black
+  text-decoration: none
+  border-bottom: 1px solid black
+
+span.sect
+  color: #e5e5e5
+
+@import utils.sass
+
+.button
+  +button
+
+@import logged_index.sass
+@import project.sass
+
 
 #chooseUploader
   position: absolute

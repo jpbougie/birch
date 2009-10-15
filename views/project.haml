@@ -1,11 +1,24 @@
 %h2
   = @project.name
-  %span#dephasis= "iteration ##{@project.iterations.count}"
+  %span.sect &sect;
+  %span.dephasis= "iteration #{@project.iterations.count}"
 
-%p= @project.description
+- if @project.description
+  %p= @project.description
 
-%ul#alternatives
-  - for alt in @project.iterations.last(:order => "created_at desc").alternatives
-    %li
-      %a{:href => "/#{@project.user.username}/#{@project.slug}/alternative/#{alt.id}"}
-        %img{:src => "/asset/thumb/#{alt.id}.jpg", :description => "#{alt.name}"}
+
+#project
+  %ul#alternatives
+    - for alt in @project.iterations.first(:order => "created_at desc").alternatives
+      %li
+        %a{:href => "/#{@project.user.username}/#{@project.slug}/alternative/#{alt.id}"}
+          %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
+#actions
+  .inner
+    %h3
+      %a#iterate.button{:href => "/#{@project.user.username}/#{@project.slug}/iterate"} Iterate &raquo;
+    %ul
+      %li Add an alternative
+      %li Close this project
+    
+    %h4 Collaborators

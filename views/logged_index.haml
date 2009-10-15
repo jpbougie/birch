@@ -1,13 +1,22 @@
-%h2= "Welcome, #{current_user.name}"
+%h2 Dashboard
+
+#featured
+  .inner
+    %h3
+      Featured Project
+    %h1= current_user.projects.first(:order => "created_at desc").name
+
 #stream
   %h3 Activity Stream
 #projects
-  %h3 Projects
+  %h3
+    Projects
+    %a.button{:href => "/create"} New Project
   - if !current_user.projects.empty?
     %ul
       - for project in current_user.projects
         %li
-          %a{:href => "/project/#{project.id}"}= project.name
+          %a{:href => "/#{current_user.username}/#{project.slug}"}= project.name
   - else
     No projects yet.
     %a{:href => "/create"} Create a new one
