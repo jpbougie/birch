@@ -123,12 +123,53 @@ post '/upload' do
   
 end
 
-get "/:user/:project" do
-  @user = User.find_by_username params[:user]
-  not_found("User does not exist") if @user.nil?
+# /jpbougie/project-birch/
+# /jpbougie/project-birch/a0234a0
+# /jpbougie/project-birch/iteration-1/a0234a0
+
+# project view
+# an iteration can be given, otherwise the last one will be used
+[ "/:user/:project/iteration-:iteration", 
+  "/:user/:project"].each do |path|
+  get path do
+    @user = User.find_by_username params[:user]
+    not_found("User does not exist") if @user.nil?
+    
+    @project = @user.projects.first(:conditions => {:slug => params[:project]})
+    not_found("Project could not be found") if @project.nil?
+    
+    @iteration = unless params[:iteration].nil?
+      @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+    else
+      @project.iterations.first(:order => "created_at desc")
+    end
+    
+    not_found("Iteration could not be found") if @iteration.nil?
   
-  @project = @user.projects.first(:conditions => {:slug => params[:project]})
-  not_found("Project could not be found") if @project.nil?
+    haml :project
+  end
+end
+
+# view an alternative
+[ "/:user/:project/iteration-:iteration/:alternative",
+  "/:user/:project/:alternative" ].each do |path|
   
-  haml :project
+  get path do
+    @user = User.find_by_username params[:user]
+    not_found("User does not exist") if @user.nil?
+    
+    @project = @user.projects.first(:conditions => {:slug => params[:project]})
+    not_found("Project could not be found") if @project.nil?
+    
+    @iteration = unless params[:iteration].nil?
+      @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+    else
+      @project.iterations.first(:order => "created_at desc")
+    end
+    
+    @alternative = @iteration.alternatives.find(params[:alternative])
+    not_found("Alternative could not be found") if @alternative.nil?
+    
+    haml :alternative
+  end
 end

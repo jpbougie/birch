@@ -1,7 +1,7 @@
 %h2
   = @project.name
   %span.sect &sect;
-  %span.dephasis= "iteration #{@project.iterations.count}"
+  %span.dephasis= "iteration #{@iteration.order}"
 
 - if @project.description
   #description
@@ -10,9 +10,9 @@
 
 #project
   %ul#alternatives
-    - for alt in @project.iterations.first(:order => "created_at desc").alternatives
+    - for alt in @iteration.alternatives
       %li
-        %a{:href => "/#{@project.user.username}/#{@project.slug}/alternative/#{alt.id}"}
+        %a{:href => "/#{@project.user.username}/#{@project.slug}/#{alt.id}"}
           %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
 #actions
   .inner
