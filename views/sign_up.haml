@@ -1,15 +1,17 @@
 %h2 Sign up to Project Birch
-%form{:method => "POST"}
-  Name
-  %input#name{:type => "text", :name => "user[name]"}
-  %br
-  Login
-  %input#username{:type => "text", :name => "user[username]"}
-  %br
-  E-mail
-  %input#email{:type => "text", :name => "user[email]"}
-  %br
-  Password
-  %input#password{:type => "password", :name => "user[password]"}
-  %br
-  %input{:type => "submit", :value => "sign up"}
+#signup-form
+  %form{:method => "POST"}
+    %label.width2
+      Name
+      %input#name{:type => "text", :name => "user[name]"}
+    %label.width2
+      Login
+      %input#username{:type => "text", :name => "user[username]"}
+    %label.width2
+      E-mail
+      %input#email{:type => "text", :name => "user[email]"}
+    %label.width2
+      Password
+      %input#password{:type => "password", :name => "user[password]"}
+    %label
+      %button#create-project.button signup
