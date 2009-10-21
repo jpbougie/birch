@@ -24,8 +24,8 @@ class User
     (0..15).map {|x| allowed_characters[rand(allowed_characters.size)]}
   end
   
-  def gravatar
-    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(self.email)}"
+  def gravatar(size=nil)
+    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(self.email)}" + (size ? "?s=#{size}" : "")
   end
   
   many :projects
@@ -67,15 +67,22 @@ class Project
   key :temp, Boolean
   key :user_id, String
   key :slug, String, :unique => true
+  key :collaborators_ids, Array
   
   before_validation :update_slug
   
   belongs_to :user
   many :iterations
   
-  many :collaborators, :class_name => "User"
-  
   timestamps!
+  
+  def collaborators
+    if self.collaborators_ids.nil?
+      []
+    else
+      User.find(self.collaborators_ids)
+    end
+  end
   
   private
   
@@ -146,9 +153,9 @@ class Invitation
   
   
   def send_email!
-    Pony.mail(:to => self.email, :from => "do-not-reply@corpcircleapp.com", 
-              :subject => "An invitation to collaborate on Crop Circle from #{self.project.user.name}",
-              :body => "http://www.cropcircleapp.com/invite/#{self.secret}")
+    # Pony.mail(:to => self.email, :from => "do-not-reply@corpcircleapp.com", 
+    #           :subject => "An invitation to collaborate on Crop Circle from #{self.project.user.name}",
+    #           :body => "http://www.cropcircleapp.com/invite/#{self.secret}")
               
     self.status = "sent"
     self.save
@@ -157,11 +164,12 @@ class Invitation
   class << self
     def import(project, body)
       # split the e-mails on whitespace
-      emails = body.split(/\W/)
+      emails = body.split(/\s/)
       registered_users = User.all(:conditions => { :email => emails })
       
       # add these registered users directly to the project
-      project.collaborators << registered_users
+      project.collaborators_ids ||= []
+      project.collaborators_ids << registered_users.collect{|u| u.id }
       project.save
       
       # remove those so we are left with those who don't have an account
@@ -173,7 +181,7 @@ class Invitation
       end
     end
     
-    def self.random_secret
+    def random_secret
       allowed_characters = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w(= - /)
       (0..15).map {|x| allowed_characters[rand(allowed_characters.size)]}
     end

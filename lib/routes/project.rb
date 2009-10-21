@@ -1,6 +1,23 @@
 require 'sinatra/base'
 
 module Sinatra
+  
+  module ProjectHelpers
+    def get_project_or_404(username, project_slug)
+      user = User.find_by_username(username)
+      not_found("User does not exist") if user.nil?
+      
+      project = user.projects.first(:conditions => {:slug => params[:project]})
+      not_found("Project could not be found for user") if project.nil?
+      
+      project
+    end
+    
+    def authorized_for_project?(user, project)
+      (project.user == user) || (project.collaborators.include? user)
+    end
+  end
+  
   module Project
     def self.registered(app)
       app.get '/create' do
@@ -53,11 +70,10 @@ module Sinatra
       [ "/:user/:project/iteration-:iteration", 
         "/:user/:project"].each do |path|
         app.get path do
-          @user = User.find_by_username params[:user]
-          not_found("User does not exist") if @user.nil?
+          login_required
+          @project = get_project_or_404(params[:user], params[:project])
 
-          @project = @user.projects.first(:conditions => {:slug => params[:project]})
-          not_found("Project could not be found") if @project.nil?
+          halt(403) unless authorized_for_project? current_user, @project
 
           @iteration = unless params[:iteration].nil?
             @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
@@ -76,11 +92,9 @@ module Sinatra
         "/:user/:project/:alternative" ].each do |path|
 
         app.get path do
-          @user = User.find_by_username params[:user]
-          not_found("User does not exist") if @user.nil?
-
-          @project = @user.projects.first(:conditions => {:slug => params[:project]})
-          not_found("Project could not be found") if @project.nil?
+          login_required
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
 
           @iteration = unless params[:iteration].nil?
             @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
@@ -94,8 +108,13 @@ module Sinatra
           haml :alternative
         end
       end
+      
+      post "/:user/:project/invite" do
+        @project = get_project_or_404(params[:user], params[:project])
+      end
     end
   end
+  helpers ProjectHelpers
   register Project
 end
 

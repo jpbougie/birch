@@ -23,3 +23,9 @@
       %li Close this project
     
     %h4 Collaborators
+    - unless @project.collaborators.empty?
+      %ul#collaborators
+        - for collaborator in @project.collaborators
+          %li
+            %a{:href => "/#{collaborator.username}"}
+              %img{:src => collaborator.gravatar(size=24), :alt => collaborator.name}
