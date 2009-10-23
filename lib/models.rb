@@ -39,12 +39,13 @@ class Tag
 end
 
 class Comment
-  include MongoMapper::Document
+  include MongoMapper::EmbeddedDocument
   
   key :body, String, :required => true
   key :user_id, String
+  key :created_at, Time
   
-  timestamps!
+  many :comments
   
   belongs_to :user
 end
@@ -101,7 +102,9 @@ class Iteration
   
   validates_uniqueness_of :order, :scope => :project_id
   belongs_to :project
+  
   many :alternatives
+  many :comments
   
   before_save :set_order
   

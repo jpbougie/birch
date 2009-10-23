@@ -1,3 +1,26 @@
 %h2= @alternative.name
 
-%img{:src => @alternative.asset.url(:large)}
+#alternative
+  %img{:src => @alternative.asset.url(:large)}
+
+#comments
+  %h4= "Comments (#{@alternative.comments.length})"
+  - if @alternative.comments.empty?
+    %p
+      No comments yet.
+  - else
+    - for comment in @alternative.comments
+      .comment
+        %img.portrait{:src => comment.user.gravatar(size=36)}
+        .byline
+          %a{:href => "/#{comment.user.username}"}= comment.user.name
+          wrote, on
+          = comment.created_at
+        %p= comment.body
+  #comments-form
+    %h5 Leave a comment
+    %form{:method => "POST", :action => "/#{@alternative.iteration.project.user.username}/#{@alternative.iteration.project.slug}/#{@alternative.id}/comment"}
+      %label.width2
+        %textarea{:name => "body"}
+      %label
+        %button.button Send

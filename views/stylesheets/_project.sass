@@ -1,5 +1,6 @@
 @import compass/utilities/lists.sass
-@import 960/grid.css
+@import 960/grid.sass
+@import baseline/form.sass
 
 #description
   +grid(16,16)
@@ -45,3 +46,31 @@
     
     li
       list-style: none
+
+#comments
+  +alpha
+  +grid(12, 16)
+  
+  h4
+    margin-bottom: 18px
+  
+  .comment
+    position: relative
+    padding: 9px
+    min-height: 36px
+    
+    &:nth-child(even)
+      background-color: #f0f0f0
+      
+    .portrait
+      position: absolute
+      margin-right: 9px
+    .byline
+      color: #555
+      margin-left: 50px
+    p
+      margin-left: 50px
+  
+  #comments-form
+    label
+      +multilinex(6)

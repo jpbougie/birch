@@ -86,6 +86,28 @@ module Sinatra
           haml :project
         end
       end
+      
+      # post a comment
+      [ "/:user/:project/iteration-:iteration/comment",
+        "/:user/:project/comment" ].each do |path|
+        post path do
+          login_required
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
+          
+          @iteration = unless params[:iteration].nil?
+            @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+          else
+            @project.iterations.first(:order => "created_at desc")
+          end
+          
+          @iteration.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          @iteration.save
+          
+          redirect "/#{params[:user]}/#{params[:project]}"
+          
+        end
+      end
 
       # view an alternative
       [ "/:user/:project/iteration-:iteration/:alternative",
@@ -106,6 +128,25 @@ module Sinatra
           not_found("Alternative could not be found") if @alternative.nil?
 
           haml :alternative
+        end
+        
+        app.post [path, 'comment'].join("/") do
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
+
+          @iteration = unless params[:iteration].nil?
+            @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+          else
+            @project.iterations.first(:order => "created_at desc")
+          end
+
+          @alternative = @iteration.alternatives.find(params[:alternative])
+          not_found("Alternative could not be found") if @alternative.nil?
+          
+          @alternative.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          @alternative.save
+          
+          redirect "/#{@project.user.username}/#{@project.slug}/#{@alternative.id}"
         end
       end
       

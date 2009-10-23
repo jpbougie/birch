@@ -29,3 +29,26 @@
           %li
             %a{:href => "/#{collaborator.username}"}
               %img{:src => collaborator.gravatar(size=24), :alt => collaborator.name}
+              
+#comments
+  %h4= "Comments (#{@iteration.comments.length})"
+  - if @iteration.comments.empty?
+    %p
+      No comments yet.
+  - else
+    - for comment in @iteration.comments
+      .comment
+        %img.portrait{:src => comment.user.gravatar(size=36)}
+        .byline
+          %a{:href => "/#{comment.user.username}"}= comment.user.name
+          wrote, on
+          = comment.created_at
+        %p= comment.body
+  #comments-form
+    %h5 Comment on this iteration
+    %form{:method => "POST", :action => "/#{@project.user.username}/#{@project.slug}/comment"}
+      %label.width2
+        %textarea{:name => "body"}
+      %label
+        %button.button Send
+    

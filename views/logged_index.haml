@@ -1,10 +1,13 @@
 %h2 Dashboard
 
-#featured
-  .inner
-    %h3
-      featured project
-    %h1= current_user.projects.first(:order => "created_at desc").name
+
+- unless current_user.projects.empty?
+  #featured
+    .inner
+      %h3
+        featured project
+      
+      %h1= current_user.projects.first(:order => "created_at desc").name
 
 #stream
   %h3 Activity Stream
