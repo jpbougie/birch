@@ -1,0 +1,29 @@
+
+%h2
+  Iterate on
+  = @project.name
+
+#create
+  %h4 Step 1
+  %h3
+    %a#choose{:href => "/upload"} Choose new pictures to upload
+  #queue
+  %h4 Step 2
+  %h3 
+    %a#launch-upload.disabled{:href => "/upload"} Upload Pictures
+
+  %h4 Step 3  
+  #describe-form
+    %form{:method => "POST"}
+      %input#iterid{:type => "hidden", :name => "iteration[id]", :value => @iteration.id}
+      %label
+        %button#create-project.button complete
+
+  ~# %h4 Step 4
+  ~# %h3 Invite others to collaborate
+
+%script{ :src => "/js/swfobject.js", :type => "text/javascript", :charset => "utf-8" }.
+%script{ :src => "/js/jquery.uploadify.v2.1.0.min.js", :type => "text/javascript", :charset => "utf-8" }.
+%script{:type => "text/javascript", :src => "/js/upload.js"}.
+%script{ :type => "text/javascript"}
+  = "$(function() {setTimeout(function() { $('#choose').uploadifySettings('scriptData', {'iteration': '#{@iteration.id}', 'project': '#{@project.id}'})}, 1000)})"

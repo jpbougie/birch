@@ -97,7 +97,7 @@ class Iteration
   
   key :project_id, String
   key :order, Integer
-  
+    
   timestamps!
   
   validates_uniqueness_of :order, :scope => :project_id
@@ -112,6 +112,26 @@ class Iteration
     if new?
       write_attribute('order', self.project.iterations.count + 1)
     end
+  end
+end
+
+class PendingIteration < Iteration
+  set_collection_name "pending_iterations"
+  
+  
+  # creates a new iteration with the pending one, moves all the alternatives before deleting itself
+  def activate!
+    it = Iteration.create(:project => self.project)
+    it.save
+    
+    update_hash = Alternative.all(:conditions => {:iteration_id => self.id}).inject({}) do |hash, alt|
+      hash[alt.id] = {:iteration_id => it.id}
+      hash
+    end
+    
+    Alternative.update(update_hash)
+    
+    self.destroy
   end
 end
 

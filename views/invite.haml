@@ -1,0 +1,10 @@
+%h2
+  Invite people to collaborate on
+  = @project.name
+#invite-form
+  %form{:method => "POST"}
+    %label.width2
+      write the e-mail addresses of the people you want to invite, placing each one on its own line.
+      %textarea#invite_body{:name => "body"}
+    %label
+      %button.button invite

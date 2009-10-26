@@ -1,4 +1,7 @@
-%h2= @alternative.name
+%h2
+  %a{:href => project_url(@project) }= @project.name
+  = ":"
+  = @alternative.name
 
 #alternative
   %img{:src => @alternative.asset.url(:large)}

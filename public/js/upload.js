@@ -48,7 +48,9 @@ Upload.onComplete = function(event, queueId, fileObj, response, data) {
   Upload.project = resp.project_id
   $('#prid').attr("value", Upload.project)
   
-  $('#choose').uploadifySettings('scriptData', {'project': Upload.project})
+  if(typeof($('#choose').uploadifySettings('scriptData').project) == 'undefined') {
+    $('#choose').uploadifySettings('scriptData', {'project': Upload.project})
+  }
   
   return true
 }

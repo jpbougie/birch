@@ -8,7 +8,8 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
   
   def store_dir
-    File.join('uploads', mounted_as.to_s, model.iteration.project.id, model.iteration.order.to_s)
+    iteration = model.iteration.nil? ? PendingIteration.find(model.iteration_id) : model.iteration
+    File.join('uploads', mounted_as.to_s, iteration.project.id, iteration.order.to_s)
   end
   
   version :thumb do

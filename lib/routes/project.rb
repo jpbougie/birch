@@ -16,6 +16,10 @@ module Sinatra
     def authorized_for_project?(user, project)
       (project.user == user) || (project.collaborators.include? user)
     end
+    
+    def project_url(project)
+      ["", project.user.username, project.slug].join("/")
+    end
   end
   
   module Project
@@ -27,38 +31,79 @@ module Sinatra
 
       app.post '/create' do
         login_required
-        p = Project.find(params[:project][:id])
+        p = ::Project.find(params[:project][:id])
         p.user = current_user
         p.name = params[:project][:name]
         p.description = params[:project][:description]
         p.temp = false
         p.save
+        
+        # fetch the alternatives from the pending iteration
 
         redirect "/#{current_user.username}/#{p.slug}"
       end
 
+
+      # this route can be called in 3 different situation:
+      # - a new project, in which case no param is given
+      #   in this case, we create a new project and a new iteration
+      # - adding files to an existing iteration, which will always be the latest
+      #   the project id is given, but no iteration id
+      # - a new iteration on an existing project, in which case a pending iteration id is given
+      #   both the project id and pending iteration id are given
       app.post '/upload' do
 
         content_type :json
 
         project = if params[:project] then
-          Project.find(params[:project])
+          ::Project.find(params[:project])
         else
-          Project.create :name => Time.now.strftime("Untitled %x %X"), :temp => true
+          ::Project.create :name => Time.now.strftime("Untitled %x %X"), :temp => true
         end
 
         project.save
 
-        iteration = project.iterations.first(:order => "created_at desc") || project.iterations.create(:order => 1)
-        iteration.save
+        iteration = if params[:iteration] then
+          PendingIteration.find(params[:iteration])
+        else
+          project.iterations.first(:order => "created_at desc") || project.iterations.create(:order => 1)
+        end
 
-        alternative = iteration.alternatives.create :name => params[:"asset.name"], :filename => params[:"asset.name"]
+        alternative = Alternative.create :name => params[:"asset.name"], :filename => params[:"asset.name"], :iteration_id => iteration.id
 
         alternative.asset = File.new(params[:"asset.path"])
         alternative.save!
 
         {:project_id => project.id, :alternative_id => alternative.id}.to_json
 
+      end
+      
+      app.get "/:user/:project/iterate" do
+        login_required
+
+        @project = get_project_or_404(params[:user], params[:project])
+
+        #only the owner can start another iteration
+        halt(403) unless current_user == @project.user
+        
+        @iteration = PendingIteration.create :project => @project
+        
+        haml :iterate
+      end
+      
+      app.post "/:user/:project/iterate" do
+        login_required
+
+        @project = get_project_or_404(params[:user], params[:project])
+
+        #only the owner can start another iteration
+        halt(403) unless current_user == @project.user
+        
+        @iteration = PendingIteration.find params[:iteration][:id]
+        
+        @iteration.activate!
+        
+        redirect "/#{params[:user]}/#{params[:project]}"
       end
 
       # /jpbougie/project-birch/
@@ -108,6 +153,25 @@ module Sinatra
           
         end
       end
+      
+      
+      get "/:user/:project/invite" do
+        login_required
+        @project = get_project_or_404(params[:user], params[:project])
+        halt(403) unless authorized_for_project? current_user, @project
+        
+        haml :invite
+      end
+      
+      post "/:user/:project/invite" do
+        login_required
+        @project = get_project_or_404(params[:user], params[:project])
+        halt(403) unless authorized_for_project? current_user, @project
+        
+        Invitation.import(@project, params[:body])
+        
+        redirect project_url(@project)
+      end
 
       # view an alternative
       [ "/:user/:project/iteration-:iteration/:alternative",
@@ -148,10 +212,6 @@ module Sinatra
           
           redirect "/#{@project.user.username}/#{@project.slug}/#{@alternative.id}"
         end
-      end
-      
-      post "/:user/:project/invite" do
-        @project = get_project_or_404(params[:user], params[:project])
       end
     end
   end
