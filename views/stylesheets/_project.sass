@@ -21,11 +21,35 @@
       +grid(4, 16)
       //border: 1px solid #aaa
       margin-bottom: 18px
+      position: relative
       
       &:nth-of-type(3n+1)
         +alpha
       &:nth-of-type(3n+3)
         +omega
+      
+      .info
+        position: absolute
+        padding: 2px
+        :width= (960px / 4) - 24px
+        background-color: rgba(0,0,0, 0.5)
+        display: none
+        
+        .comments
+          color: white
+          font-weight: bold
+          
+        .like
+          float: right
+          a
+            color: #2F72FF
+            font-weight: bold
+            
+            &:hover
+              color: white
+      
+      &:hover .info
+        display: block
       
 
 #actions

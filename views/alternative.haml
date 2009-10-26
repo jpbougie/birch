@@ -3,6 +3,8 @@
 #alternative
   %img{:src => @alternative.asset.url(:large)}
 
+#actions
+  %a{:href => @alternative.asset.url} get the original
 #comments
   %h4= "Comments (#{@alternative.comments.length})"
   - if @alternative.comments.empty?

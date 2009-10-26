@@ -12,6 +12,12 @@
   %ul#alternatives
     - for alt in @iteration.alternatives
       %li
+        .info
+          %span.comments
+            = alt.comments.size == 0 ? "no" : alt.comments.size
+            = alt.comments.size > 1 ? "comments" : "comment"
+          %span.like
+            %a{:href => "/"} ilikethis
         %a{:href => "/#{@project.user.username}/#{@project.slug}/#{alt.id}"}
           %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
 #actions
@@ -23,6 +29,7 @@
       %li Close this project
     
     %h4 Collaborators
+    %a.button{:href => "/#{@project.user.username}/#{@project.slug}/invite"} add collaborators
     - unless @project.collaborators.empty?
       %ul#collaborators
         - for collaborator in @project.collaborators
