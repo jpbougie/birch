@@ -11,6 +11,7 @@ $(document).ready(function() {
     'width': $('#choose').width(),
     'height': $('#choose').height(),
     'onComplete': Upload.onComplete,
+    'onAllComplete': Upload.onAllComplete,
     'onSelectOnce': Upload.onSelectOnce,
     'onCancel': Upload.onCancel,
   })
@@ -25,6 +26,7 @@ $(document).ready(function() {
   
   $('#launch-upload').click(function() {
     if(('#queue .uploadifyQueueItem').length > 0) {
+      $('#choose').addClass("disabled").addClass("completed")
       $('#choose').uploadifyUpload()
     }
     
@@ -72,5 +74,10 @@ Upload.onCancel = function(event, queueID, fileObj, data) {
 }
 
 Upload.onAllComplete = function(event, uploadObj) {
+  $('#queue').hide()
+  $('#describe').removeClass("disabled")
+  $('#launch-upload').addClass('completed').addClass("disabled")
+  $('#describe-form').show()
+  
   return true
 }

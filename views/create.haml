@@ -11,11 +11,8 @@
     %a#launch-upload.disabled{:href => "/upload"} Upload Pictures
 
   %h4 Step 3
-  %h3.disabled
+  %h3#describe.disabled
     Describe
-    %span.amp &
-    Annotate
-  
   #describe-form
     %form{:method => "POST"}
       %input#prid{:type => "hidden", :name => "project[id]", :value => ""}
