@@ -18,15 +18,18 @@
           %span.comments
             = alt.comments.size == 0 ? "no" : alt.comments.size
             = alt.comments.size > 1 ? "comments" : "comment"
-          %span.like
-            %a{:href => "/"} ilikethis
+          - ilike = alt.likes.include?(current_user.id) ? {:class => "ilike"} : {}
+          %span.like{ilike}
+            %a{:href => alternative_url(alt, project=@project) + "/like"}
+              = alt.likes.size
+              &hearts;
         %a{:href => alternative_url(alt, project=@project)}
-          %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
+          %img{:src => alt.asset.url(:thumb), :tite => "#{alt.name}"}
 #actions
   .inner
     - if @iteration.current?
       %h3
-        %a#iterate.button{:href => "#{project_url(@project)}/iterate"} Iterate &raquo;
+        %a#iterate.button{:href => project_url(@project, "iterate")} Iterate &raquo;
     %ul
       %li Add an alternative
       %li Close this project
@@ -63,4 +66,12 @@
         %textarea{:name => "body"}
       %label
         %button.button Send
-    
+
+:javascript
+  $(function() {
+    $('span.like a').click(function() {
+      $.post($(this).attr('href'))
+      $(this).parent('span').addClass('ilike')
+      return false
+    })
+  })

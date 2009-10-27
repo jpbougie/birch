@@ -146,6 +146,7 @@ class Alternative
   key :filename, String
   key :description, String
   key :iteration_id, String
+  key :likes, Array
   
   mount_uploader :asset, AssetUploader
   
