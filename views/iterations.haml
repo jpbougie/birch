@@ -1,0 +1,18 @@
+%h2
+  Iterations on
+  %a{:href => project_url(@project)}= @project.name
+  
+#iter-container
+  %ol#iterations
+    - for iteration in @project.iterations.all(:order => "created_at")
+      %li
+        .iteration
+          %a{:href => project_url(@project, nil, iteration=iteration)}
+            started 
+            %span.number= distance_of_time(iteration.created_at)
+            ago
+            %br
+            %span.number= iteration.alternatives.size
+            images
+            %span.number= iteration.comments.size
+            comments

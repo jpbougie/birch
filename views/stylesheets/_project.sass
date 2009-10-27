@@ -2,113 +2,114 @@
 @import 960/grid.sass
 @import baseline/form.sass
 
-#description
-  +grid(16,16)
-  p
-    +alpha
-    +omega
-    background: #f5f5f5
-    border: 1px solid #ccc
-    margin-bottom: 17px
-    padding: 9px
-
-#project
-  +alpha
-  +grid(12, 16)
-  #alternatives
-    +inline-list
-    li
-      +grid(4, 16)
-      //border: 1px solid #aaa
-      margin-bottom: 18px
-      position: relative
-      
-      &:nth-of-type(3n+1)
-        +alpha
-      &:nth-of-type(3n+3)
-        +omega
-      
-      .info
-        position: absolute
-        padding: 2px
-        :width= (960px / 4) - 24px
-        background-color: rgba(0,0,0, 0.5)
-        display: none
-        
-        .comments
-          color: white
-          font-weight: bold
-          
-        .like
-          float: right
-          a
-            color: #2F72FF
-            font-weight: bold
-            
-            &:hover
-              color: white
-      
-      &:hover .info
-        display: block
-      
-
-#actions
-  +omega
-  +grid(4,16)
-  
-  .inner
-    padding: 5px
-    background: #f5f5f5
-    border: 1px solid #ccc
-    
-    h3
-      margin-top: 10px
-      text-align: center
-      
-      a#iterate
-        +button
-    
-    li
-      list-style: none
-    
-    h4 .button
-      padding: 0px 8px 2px 8px
-    
-    .plus
-      font-size: 0.75em
-      
-    #collaborators
-      +inline-list
-      li a
-        border: 0
-      li a img
-        border: 1px solid #ccc
-        padding: 1px
-        
-#comments
-  +alpha
-  +grid(12, 16)
-  
-  h4
-    margin-bottom: 18px
-  
-  .comment
-    position: relative
-    padding: 9px
-    min-height: 36px
-    
-    &:nth-child(even)
-      background-color: #f0f0f0
-      
-    .portrait
-      position: absolute
-      margin-right: 9px
-    .byline
-      color: #555
-      margin-left: 50px
+#project-section
+  #description
+    +grid(16,16)
     p
-      margin-left: 50px
+      +alpha
+      +omega
+      background: #f5f5f5
+      border: 1px solid #ccc
+      margin-bottom: 17px
+      padding: 9px
+
+  #project
+    +alpha
+    +grid(12, 16)
+    #alternatives
+      +inline-list
+      li
+        +grid(4, 16)
+        //border: 1px solid #aaa
+        margin-bottom: 18px
+        position: relative
+      
+        &:nth-of-type(3n+1)
+          +alpha
+        &:nth-of-type(3n+3)
+          +omega
+      
+        .info
+          position: absolute
+          padding: 2px
+          :width= (960px / 4) - 24px
+          background-color: rgba(0,0,0, 0.5)
+          display: none
+        
+          .comments
+            color: white
+            font-weight: bold
+          
+          .like
+            float: right
+            a
+              color: #2F72FF
+              font-weight: bold
+            
+              &:hover
+                color: white
+      
+        &:hover .info
+          display: block
+      
+
+  #actions
+    +omega
+    +grid(4,16)
   
-  #comments-form
-    label
-      +multilinex(6)
+    .inner
+      padding: 5px
+      background: #f5f5f5
+      border: 1px solid #ccc
+    
+      h3
+        margin-top: 10px
+        text-align: center
+      
+        a#iterate
+          +button
+    
+      li
+        list-style: none
+    
+      h4 .button
+        padding: 0px 8px 2px 8px
+    
+      .plus
+        font-size: 0.75em
+      
+      #collaborators
+        +inline-list
+        li a
+          border: 0
+        li a img
+          border: 1px solid #ccc
+          padding: 1px
+        
+  #comments
+    +alpha
+    +grid(12, 16)
+  
+    h4
+      margin-bottom: 18px
+  
+    .comment
+      position: relative
+      padding: 9px
+      min-height: 36px
+    
+      &:nth-child(even)
+        background-color: #f0f0f0
+      
+      .portrait
+        position: absolute
+        margin-right: 9px
+      .byline
+        color: #555
+        margin-left: 50px
+      p
+        margin-left: 50px
+  
+    #comments-form
+      label
+        +multilinex(6)

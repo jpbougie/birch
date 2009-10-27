@@ -1,7 +1,9 @@
 %h2
   = @project.name
   %span.sect &sect;
-  %span.dephasis= "iteration #{@iteration.order}"
+  %span.dephasis
+    iteration 
+    %a{:href => project_url(@project, "iterations")}= @iteration.order
 
 - if @project.description
   #description
