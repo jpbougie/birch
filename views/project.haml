@@ -22,14 +22,17 @@
           %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
 #actions
   .inner
-    %h3
-      %a#iterate.button{:href => "#{project_url(@project)}/iterate"} Iterate &raquo;
+    - if @iteration.current?
+      %h3
+        %a#iterate.button{:href => "#{project_url(@project)}/iterate"} Iterate &raquo;
     %ul
       %li Add an alternative
       %li Close this project
     
-    %h4 Collaborators
-    %a.button{:href => "#{project_url(@project)}/invite"} add collaborators
+    %h4
+      Collaborators
+      %a.button{:href => "#{project_url(@project)}/invite"}
+        %span.plus +
     - unless @project.collaborators.empty?
       %ul#collaborators
         - for collaborator in @project.collaborators
