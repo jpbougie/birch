@@ -2,12 +2,14 @@
 
 
 - unless current_user.projects.empty?
+  - featured = current_user.projects.first(:order => "created_at desc")
   #featured
     .inner
       %h3
         featured project
       
-      %h1= current_user.projects.first(:order => "created_at desc").name
+      %h1
+        %a{:href => project_url(featured)}= featured.name
 
 #stream
   %h3 Activity Stream
@@ -23,7 +25,7 @@
     %ul
       - for project in current_user.projects
         %li
-          %a{:href => "/#{current_user.username}/#{project.slug}"}= project.name
+          %a{:href => project_url(project)}= project.name
   - else
     No projects yet.
     %a{:href => "/create"} Create a new one

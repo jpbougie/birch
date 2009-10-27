@@ -17,8 +17,17 @@ module Sinatra
       (project.user == user) || (project.collaborators.include? user)
     end
     
-    def project_url(project)
-      ["", project.user.username, project.slug].join("/")
+    def project_url(project, append=nil, iteration=nil)
+      array = ["", project.user.username, project.slug]
+      array << "iteration-#{iteration.order}" if iteration
+      array << append if append
+      array.join("/")
+    end
+    
+    def alternative_url(alternative, project=nil, iteration=nil, permalink=false)
+      # params can be passed so we don't have to recalculate them
+      iteration ||= alternative.iteration
+      project_url(project || alternative.iteration.project, alternative.id, (!iteration.current? || permalink) ? iteration : nil)
     end
   end
   
@@ -40,7 +49,7 @@ module Sinatra
         
         # fetch the alternatives from the pending iteration
 
-        redirect "/#{current_user.username}/#{p.slug}"
+        redirect project_url(@project)
       end
 
 
@@ -103,7 +112,7 @@ module Sinatra
         
         @iteration.activate!
         
-        redirect "/#{params[:user]}/#{params[:project]}"
+        redirect project_url(@project)
       end
 
       # /jpbougie/project-birch/
@@ -149,7 +158,7 @@ module Sinatra
           @iteration.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
           @iteration.save
           
-          redirect "/#{params[:user]}/#{params[:project]}"
+          redirect project_url(@project)
           
         end
       end
@@ -210,7 +219,7 @@ module Sinatra
           @alternative.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
           @alternative.save
           
-          redirect "/#{@project.user.username}/#{@project.slug}/#{@alternative.id}"
+          redirect alternative_url(@alternative, project=@project, iteration=@iteration)
         end
       end
     end

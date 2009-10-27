@@ -113,6 +113,10 @@ class Iteration
       write_attribute('order', self.project.iterations.count + 1)
     end
   end
+  
+  def current?
+    self.project.iterations.count == self.order
+  end
 end
 
 class PendingIteration < Iteration

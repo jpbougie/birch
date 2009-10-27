@@ -18,18 +18,18 @@
             = alt.comments.size > 1 ? "comments" : "comment"
           %span.like
             %a{:href => "/"} ilikethis
-        %a{:href => "/#{@project.user.username}/#{@project.slug}/#{alt.id}"}
+        %a{:href => alternative_url(alt, project=@project)}
           %img{:src => alt.asset.url(:thumb), :description => "#{alt.name}"}
 #actions
   .inner
     %h3
-      %a#iterate.button{:href => "/#{@project.user.username}/#{@project.slug}/iterate"} Iterate &raquo;
+      %a#iterate.button{:href => "#{project_url(@project)}/iterate"} Iterate &raquo;
     %ul
       %li Add an alternative
       %li Close this project
     
     %h4 Collaborators
-    %a.button{:href => "/#{@project.user.username}/#{@project.slug}/invite"} add collaborators
+    %a.button{:href => "#{project_url(@project)}/invite"} add collaborators
     - unless @project.collaborators.empty?
       %ul#collaborators
         - for collaborator in @project.collaborators
