@@ -4,7 +4,10 @@ var Drawing = function() {
   this.paper = null
   this.backgroundImage = null
   this.objects = []
+  this.tools = {}
   this.listeners = {}
+  
+  this.toolbar = new Toolbar(this)
 
   this.replaceImage = function(image) {
     elem = $(image)
@@ -41,12 +44,17 @@ var Drawing = function() {
     this.paper.canvas.addEventListener("mouseup", this.listeners.mouseup, false)
   }
   
-  this.track = function(object) {
-    this.objects.push(object)
+  this.track = function(data, canvasObject) {
+    this.objects.push({data: data, object: canvasObject})
   }
   
-  this.toolCompleted = function(tool) {
-    this.activatedTool
+  this.register = function(type, tool) {
+    this.tools[type] = tool
+    this.toolbar.register(type, tool)
+  }
+  
+  this._import = function(data) {
+    this.track(data, this.tools[data["_type"]]._import(data))
   }
 }
 
@@ -165,6 +173,7 @@ DragTool.prototype = new Tool()
 var Line = function(drawing) {
   this.object = null
   this.size = 20
+  this.end = null
   this.insert = function() {
     this.start = new Pos(this.start.x - (this.size / 2), this.start.y)
     this.object = drawing.paper.rect(this.start.x, this.start.y - this.size / 2, this.size, this.size, this.size / 2)
@@ -183,10 +192,12 @@ var Line = function(drawing) {
     
     this.object.rotate(angle, this.start.x + (this.size / 2), this.start.y)
     this.object.attr("width", width)
+    this.end = pos
   }
   
   this.release = function() {
-    drawing.track(this.object)
+    data = {_type: "Line", x: this.start.x, y: this.start.y, x2: this.end.x, y2: this.end.y}
+    drawing.track(data, this.object)
   }
   
   this.logo = function(offset) {
@@ -197,6 +208,25 @@ var Line = function(drawing) {
     
     return set
   }
+  
+  this._import = function(data) {
+    size = 20
+    obj = drawing.paper.rect(data.x, data.y - size / 2, size, size, size / 2)
+    obj.attr("fill", "#00B4FF")
+    obj.attr("stroke-width", 0)
+
+    delta = new Pos(data.x2 - data.x, data.y2 - data.y)
+
+    angle = Math.atan2(delta.y, delta.x) * 180 / Math.PI
+    width = Math.sqrt(delta.x * delta.x + delta.y * delta.y)
+
+    obj.rotate(angle, data.x + (size / 2), data.y)
+    obj.attr("width", width)
+
+    return obj
+
+  }
+  
 }
 
 Line.prototype = new DragTool()
@@ -235,6 +265,14 @@ var Ellipse = function(drawing) {
     set.push(circle)
     
     return set
+  }
+  
+  this._import = function(data) {
+    object = drawing.paper.ellipse(data.cx, data.cy, data.rx, data.ry)
+    object.attr("stroke-width", 10)
+    object.attr("stroke", "#00B4FF")
+    
+    return object
   }
 }
 
@@ -276,3 +314,65 @@ var Arrow = function(drawing) {
 }
 
 Arrow.prototype = new DragTool()
+
+var Text = function(drawing) {
+  this.object = null
+  
+  this.logo = function(offset) {
+    st = drawing.paper.set()
+    txt = drawing.paper.text(offset.x + 12, offset.y + 12, "a")
+    txt.attr("font-size", "20px")
+    txt.attr("font-family", "helvetica")
+    txt.attr("stroke", "white")
+    txt.attr("stroke-width", 2)
+    st.push(txt)
+    
+    return st
+  }
+}
+
+Text.prototype = new Tool()
+
+function loadAnnotations() {
+  $.getJON(location.href + "/annotations", '', function(data) {
+    
+  })
+}
+
+drawing = null
+$(document).ready(function() {
+  $('#annotate').click(function(ev) {
+    drawing = new Drawing()
+    drawing.replaceImage('#alternative img')
+    drawing.register("Line", new Line(drawing))
+    drawing.register("Ellipse", new Ellipse(drawing))
+    drawing.toolbar.draw()
+    $('#annotate').hide()
+    $('#annotate-actions').show()
+    $('<div id="overlay">').appendTo('body')
+        .css('position', 'absolute')
+        .css('top', 0)
+        .css('left', 0)
+        .css('width', '100%')
+        .css('height','99999px')
+        .css('overflow', 'none')
+        .css('background', 'black')
+        .css('opacity', '0.8')
+        .css('z-index', '2')
+    
+    $('#annotate-actions').css('position', 'relative').css('z-index', '2000')
+    $(drawing.paper.canvas).css('position', 'relative').css('z-index', '2000')
+    return false
+  })
+  
+  $('#complete-annotation').click(function() {
+    data = $.map(drawing.objects, function() { return this.data })
+    $.post(location.href + '/annotations', JSON.stringify(data), function(responseData, status) {
+      $('#overlay').remove()
+      $('#annotate-actions').hide()
+      $('#annotate').show()
+    })
+    
+    return false
+  })
+})

@@ -237,7 +237,7 @@ module Sinatra
           @alternative = @iteration.alternatives.find(params[:alternative])
           not_found("Alternative could not be found") if @alternative.nil?
 
-          haml :alternative
+          haml :alternative, :locals => {:bodyid => "alternative-section"}
         end
         
         app.post [path, 'comment'].join("/") do
@@ -278,6 +278,46 @@ module Sinatra
           end
           
           redirect alternative_url(@alternative, project=@project, iteration=@iteration)
+        end
+        
+        app.get [path, 'annotations'].join("/") do
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
+
+          @iteration = unless params[:iteration].nil?
+            @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+          else
+            @project.iterations.first(:order => "created_at desc")
+          end
+
+          @alternative = @iteration.alternatives.find(params[:alternative])
+          not_found("Alternative could not be found") if @alternative.nil?
+          
+          content_type :json
+          @alternative.annotations.to_json
+        end
+        
+        app.post [path, 'annotations'].join("/") do
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
+
+          @iteration = unless params[:iteration].nil?
+            @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+          else
+            @project.iterations.first(:order => "created_at desc")
+          end
+
+          @alternative = @iteration.alternatives.find(params[:alternative])
+          not_found("Alternative could not be found") if @alternative.nil?
+          
+          elements = Yajl::Parser.parse(request.body)
+          puts elements.inspect
+          elements.collect! {|elem| elem["_type"].constantize.new(elem)}
+          
+          @alternative.annotations << Annotation.new(:user => current_user, :elements => elements)
+          @alternative.save
+          
+          redirect alternative_url(@alternative, project=@project, iteration=@iteration) 
         end
         
       end

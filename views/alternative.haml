@@ -5,9 +5,17 @@
 
 #alternative
   %img{:src => @alternative.asset.url(:large)}
+  
+  #actions
+    %a#annotate{:href => ""} annotate this picture
+    %span.sect §
+    #annotate-actions{:style => "display: none"}
+      %a#complete-annotation.button{:href => ""} complete
+      or
+      %a#cancel-annotation{:href => ""} cancel
+    %a{:href => @alternative.asset.url} download the original
+  
 
-#actions
-  %a{:href => @alternative.asset.url} get the original
 #comments
   %h4= "Comments (#{@alternative.comments.length})"
   - if @alternative.comments.empty?
@@ -30,5 +38,7 @@
       %label
         %button.button Send
 
+  
 %script{:src => "/js/raphael.js"}
+%script{:src => "/js/json2.js"}
 %script{:src => "/js/drawing.js"}

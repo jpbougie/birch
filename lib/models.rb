@@ -50,16 +50,6 @@ class Comment
   belongs_to :user
 end
 
-class Crop
-  include MongoMapper::EmbeddedDocument
-  
-  key :top, Integer
-  key :left, Integer
-  key :width, Integer
-  key :height, Integer
-end
-
-
 class Project
   include MongoMapper::Document
 
@@ -154,6 +144,18 @@ class Alternative
   
   belongs_to :iteration
   many :comments
+  many :annotations
+end
+
+class Annotation
+  include MongoMapper::EmbeddedDocument
+  
+  key :user_id, String
+
+  belongs_to :user
+  
+  many :elements, :polymorphic => true
+  
 end
 
 class Event

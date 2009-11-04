@@ -10,6 +10,7 @@ require 'ninesixty'
 require 'baseline'
 
 require 'mongo_mapper'
+require 'yajl'
 
 $: << File.join(File.dirname(__FILE__), 'lib')
 
@@ -30,6 +31,7 @@ end
 enable :sessions
 
 require 'upload'
+require 'annotations'
 require 'models'
 require 'auth'
 Dir['lib/routes/*.rb'].each {|route| require route}
