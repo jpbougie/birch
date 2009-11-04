@@ -343,25 +343,14 @@ drawing = null
 $(document).ready(function() {
   $('#annotate').click(function(ev) {
     drawing = new Drawing()
-    drawing.replaceImage('#alternative img')
+    $('<div id="overlay">').appendTo('body')
+    
+    $('#drawing-board').show()
+
+    drawing.replaceImage('#drawing-board img')
     drawing.register("Line", new Line(drawing))
     drawing.register("Ellipse", new Ellipse(drawing))
     drawing.toolbar.draw()
-    $('#annotate').hide()
-    $('#annotate-actions').show()
-    $('<div id="overlay">').appendTo('body')
-        .css('position', 'absolute')
-        .css('top', 0)
-        .css('left', 0)
-        .css('width', '100%')
-        .css('height','99999px')
-        .css('overflow', 'none')
-        .css('background', 'black')
-        .css('opacity', '0.8')
-        .css('z-index', '2')
-    
-    $('#annotate-actions').css('position', 'relative').css('z-index', '2000')
-    $(drawing.paper.canvas).css('position', 'relative').css('z-index', '2000')
     return false
   })
   
@@ -369,8 +358,7 @@ $(document).ready(function() {
     data = $.map(drawing.objects, function() { return this.data })
     $.post(location.href + '/annotations', JSON.stringify(data), function(responseData, status) {
       $('#overlay').remove()
-      $('#annotate-actions').hide()
-      $('#annotate').show()
+      $('#drawing-board').hide()
     })
     
     return false

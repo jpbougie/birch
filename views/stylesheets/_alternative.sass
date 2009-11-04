@@ -14,12 +14,49 @@
       border: 1px solid #c5c5c5
       padding: 3px
       
-  #actions
+  #drawing-board
+    position: absolute
+    margin: 0 auto
+    top: 100px
+    z-index: 10
+    padding: 5px
+    background-color: white
+    border: 1px solid #333
+    
+    #annotate-actions
+      margin: 9px
   
   #comments
     +omega
     +grid-prefix(1, 16)
     +grid(7, 16)
+    
+    
+    h4
+      margin-bottom: 18px
+  
+    h5
+      margin-top: 9px
+      margin-bottom: 9px
+      
+    .comment
+      position: relative
+      padding: 9px
+      min-height: 36px
+    
+      &:nth-child(even)
+        background-color: #f0f0f0
+      
+      .portrait
+        position: absolute
+        margin-right: 9px
+      .byline
+        font-style: italic
+        color: #858585
+        margin-left: 50px
+      p
+        margin-left: 50px
+        margin-bottom: 9px
     
     #comments-form
       label

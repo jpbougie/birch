@@ -26,4 +26,4 @@
 %script{ :src => "/js/jquery.uploadify.v2.1.0.min.js", :type => "text/javascript", :charset => "utf-8" }.
 %script{:type => "text/javascript", :src => "/js/upload.js"}.
 %script{ :type => "text/javascript"}
-  = "$(function() {setTimeout(function() { $('#choose').uploadifySettings('scriptData', {'iteration': '#{@iteration.id}', 'project': '#{@project.id}'})}, 1000)})"
+  = "$(function() {setTimeout(function() { $('#choose').uploadifySettings('scriptData', {'iteration': '#{@iteration.id}', 'project': '#{@project.id}'})}, 10000)})"

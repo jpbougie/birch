@@ -9,10 +9,6 @@
   #actions
     %a#annotate{:href => ""} annotate this picture
     %span.sect §
-    #annotate-actions{:style => "display: none"}
-      %a#complete-annotation.button{:href => ""} complete
-      or
-      %a#cancel-annotation{:href => ""} cancel
     %a{:href => @alternative.asset.url} download the original
   
 
@@ -27,18 +23,25 @@
         %img.portrait{:src => comment.user.gravatar(size=36)}
         .byline
           %a{:href => "/#{comment.user.username}"}= comment.user.name
-          wrote, on
-          = comment.created_at
+          wrote about
+          = distance_of_time(comment.created_at)
+          ago
         %p= comment.body
   #comments-form
     %h5 Leave a comment
-    %form{:method => "POST", :action => "/#{@alternative.iteration.project.user.username}/#{@alternative.iteration.project.slug}/#{@alternative.id}/comment"}
+    %form{:method => "POST", :action => alternative_url(@alternative, project=@project) + "/comment"}
       %label.width2
         %textarea{:name => "body"}
       %label
         %button.button Send
 
-  
+#drawing-board{:style => "display: none"}
+  %img{:src => @alternative.asset.url(:large)}
+  #annotate-actions
+    use the tools to annotate the picture, then
+    %a#complete-annotation.button{:href => ""} complete
+    or
+    %a#cancel-annotation{:href => ""} cancel
 %script{:src => "/js/raphael.js"}
 %script{:src => "/js/json2.js"}
 %script{:src => "/js/drawing.js"}
