@@ -77,7 +77,7 @@ module Sinatra
         
         # fetch the alternatives from the pending iteration
 
-        redirect project_url(@project)
+        redirect project_url(p)
       end
 
 
