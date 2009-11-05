@@ -19,7 +19,6 @@ require 'carrierwave/orm/mongomapper'
 
 
 configure do
-  MongoMapper.connection = Mongo::Connection.new('localhost')
   MongoMapper.database = "dev"
   
   Compass.configuration do |config|
