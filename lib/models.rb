@@ -90,7 +90,7 @@ class Iteration
     
   timestamps!
   
-  validates_uniqueness_of :order, :scope => :project_id
+  #validates_uniqueness_of :order, :scope => :project_id
   belongs_to :project
   
   many :alternatives
@@ -156,17 +156,6 @@ class Annotation
   
   many :elements, :polymorphic => true
   
-end
-
-class Event
-  include MongoMapper::Document
-  
-  key :type, String
-  key :user_id, String
-  
-  timestamps!
-  
-  belongs_to :user
 end
 
 class Invitation
