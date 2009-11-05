@@ -2,15 +2,12 @@ set :user, "jpbougie"
 set :port, 29209
 
 set :application, "birch"
-set :repository,  "git@github.com/jpbougie/birch.git"
+set :repository,  "git@github.com:jpbougie/birch.git"
 
 set :scm, :git
 set :branch, "master"
-set :deploy_via, :remote_cache
 
 default_run_options[:pty] = true
-ssh_options[:forward_agent] = true
-
 
 role :web, "jpbougie.net"                          # Your HTTP server, Apache/etc
 role :app, "jpbougie.net"                          # This may be the same as your `Web` server
@@ -32,14 +29,14 @@ set :deploy_to, "/data/#{application}"
 
 namespace :deploy do
   task :start do
-    run "#{try_sudo} unicorn -c #{deploy_to}/config/unicorn.rb -E production -D"
+    run "cd #{current_path} && #{try_sudo} unicorn -c #{current_path}/config/unicorn.rb -E production -D #{current_path}/config.ru"
   end
   
   task :stop do
-    run "#{try_sudo} kill -s QUIT `cat #{deploy_to}/tmp/pids/unicorn.pid`"
+    run "#{try_sudo} kill -s QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
   end
   
   task :restart do
-    run "#{try_sudo} kill -s HUP `cat #{deploy_to}/tmp/pids/unicorn.pid`"
+    run "#{try_sudo} kill -s HUP `cat #{current_path}/tmp/pids/unicorn.pid`"
   end
 end

@@ -20,6 +20,7 @@ require 'carrierwave/orm/mongomapper'
 
 configure do
   MongoMapper.database = "dev"
+  MongoMapper.connection = Mongo::Connection.new('localhost')
   
   Compass.configuration do |config|
     config.project_path = File.dirname(__FILE__)

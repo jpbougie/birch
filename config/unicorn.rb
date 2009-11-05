@@ -50,9 +50,7 @@ after_fork do |server, worker|
   ##
   # Unicorn master loads the app then forks off workers - because of the way
   # Unix forking works, we need to make sure we aren't using any of the parent's
-  # sockets, e.g. db connection
-  MongoMapper.connection = Mongo::Connection.new('localhost')
-  
+  # sockets, e.g. db connection  
  
   ##
   # Unicorn master is started as root, which is fine, but let's
