@@ -36,10 +36,10 @@ namespace :deploy do
   end
   
   task :stop do
-    run "#{try_sudo} kill -s QUIT `echo #{deploy_to}/tmp/pids/unicorn.pid`"
+    run "#{try_sudo} kill -s QUIT `cat #{deploy_to}/tmp/pids/unicorn.pid`"
   end
   
   task :restart do
-    run "#{try_sudo} kill -s HUP `echo #{deploy_to}/tmp/pids/unicorn.pid`"
+    run "#{try_sudo} kill -s HUP `cat #{deploy_to}/tmp/pids/unicorn.pid`"
   end
 end

@@ -3,3 +3,4 @@ config/sift.rb
 .DS_Store
 log/*
 public/uploads/*
+tmp/*

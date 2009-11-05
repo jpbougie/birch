@@ -70,7 +70,10 @@ after_fork do |server, worker|
       Process::UID.change_privilege(target_uid)
     end
   rescue => e
-      raise e
-    end
+      if ENV["RACK_ENV"] == "development"
+        puts "Couldn't change user"
+      else
+        raise e
+      end
   end
 end
