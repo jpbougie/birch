@@ -1,6 +1,6 @@
 %h2
   %a{:href => project_url(@project) }= @project.name
-  = ":"
+  %span.sect &sect;
   = @alternative.name
 
 #alternative
@@ -8,9 +8,18 @@
   
   #actions
     %a#annotate{:href => ""} annotate this picture
-    %span.sect §
+    %span.sect &sect;
     %a{:href => @alternative.asset.url} download the original
   
+  - unless @alternative.annotations.empty?
+    #annotations
+    %h3 Annotations
+    %ol
+      - for annotation in @alternative.annotations
+        %li.annotation
+          %a.show-annotation{:href => "##{annotation.id}"}
+            by
+            = annotation.user.name
 
 #comments
   %h4= "Comments (#{@alternative.comments.length})"
@@ -42,6 +51,12 @@
     %a#complete-annotation.button{:href => ""} complete
     or
     %a#cancel-annotation{:href => ""} cancel
+    
+#annotation-view{:style => "display: none"}
+  %img{:src => @alternative.asset.url(:large)}
+  #view-actions
+    %a#close-annotation{:href => ""} close
+
 %script{:src => "/js/raphael.js"}
 %script{:src => "/js/json2.js"}
 %script{:src => "/js/drawing.js"}

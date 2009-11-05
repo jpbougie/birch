@@ -320,6 +320,22 @@ module Sinatra
           redirect alternative_url(@alternative, project=@project, iteration=@iteration) 
         end
         
+        app.get [path, 'annotations', ':annotation'].join("/") do
+          @project = get_project_or_404(params[:user], params[:project])
+          halt(403) unless authorized_for_project? current_user, @project
+
+          @iteration = unless params[:iteration].nil?
+            @project.iterations.first(:conditions => {:order => params[:iteration].to_i })
+          else
+            @project.iterations.first(:order => "created_at desc")
+          end
+
+          @alternative = @iteration.alternatives.find(params[:alternative])
+          not_found("Alternative could not be found") if @alternative.nil?
+          
+          content_type :json
+          @alternative.annotations.find(params[:annotation]).to_json
+        end
       end
     end
   end

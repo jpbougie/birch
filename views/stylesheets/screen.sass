@@ -14,16 +14,29 @@
 
 =hidden
   display: none
+
+body
+  color: #333
   
+!highlight = "#2F72FF"
+
 #bar
-  background-color: black
+  background-color: #f0f0f0
   padding: 0px 0px 3px 5px
   margin-bottom: 0.5em
+  border-bottom: 1px solid #c5c5c5
   
   a
-    color: white
+    border: 0
     text-decoration: none
     font-weight: bold
+    
+    &:hover
+      background: none
+      color: #333
+  
+  a#logo:hover span.offcolor
+    :color= !highlight
   
   .inner
     +grid-system(16)
@@ -32,11 +45,11 @@
   
     #logo
       +alpha
-      +grid(10, 16)
+      +grid(3, 16)
       letter-spacing: 0.2em
       
       span.offcolor
-        color: #2F72FF
+        color: #888
         
       #typelogo
         font-family: "Century Gothic"
@@ -46,10 +59,26 @@
         #ll, #rr
           font-size: 0.7em
           position: relative
+        
+        #ll
           top: -1px
+          left: 1px
+          
+        #rr
+          top: -2px
+          left: -1px
         
         #l, #r
           font-size: 1.1em
+          position: relative
+          
+        #l
+          top: 3px
+          left: 1px
+        
+        #r
+          top: -3px
+          left: -2px
           
         #c
           font-size: 1.5em
@@ -57,7 +86,7 @@
           top: 1px
     #options
       +omega
-      +grid-prefix(3, 16)
+      +grid-prefix(10, 16)
       +grid(3, 16)
       padding-top: 6px
       #logout
@@ -80,9 +109,14 @@
       font-weight: normal
     
 a
-  color: black
+  color: #333
   text-decoration: none
-  border-bottom: 1px solid black
+  border-bottom: 1px solid #333
+  
+  &:hover
+    border: 0
+    :background-color= !highlight
+    color: white
 
 .blank
   font-family: Times New Roman, serif
@@ -94,14 +128,14 @@ span.sect
   color: #e5e5e5
   
 #overlay
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   width: 100%
-  height: 9999px
-  overflow: none
+  height: 2000px
+  overflow: hidden
   z-index: 5
-  opacity: 0.5
+  opacity: 0.6
   background: #000
 
 @import utils.sass

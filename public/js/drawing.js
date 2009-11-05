@@ -179,6 +179,7 @@ var Line = function(drawing) {
     this.object = drawing.paper.rect(this.start.x, this.start.y - this.size / 2, this.size, this.size, this.size / 2)
     this.object.attr("fill", "#00B4FF")
     this.object.attr("stroke-width", 0)
+    this.end = new Pos(this.start.x + this.size, this.start.y + this.size / 2)
     
   }
   
@@ -254,7 +255,8 @@ var Ellipse = function(drawing) {
   }
   
   this.release = function() {
-    drawing.track(this.object)
+    data = {_type: "Ellipse", cx: this.object.attr("cx"), cy: this.object.attr("cy"), rx: this.object.attr("rx"), ry: this.object.attr("ry")}
+    drawing.track(data, this.object)
   }
   
   this.logo = function(offset) {
@@ -355,12 +357,42 @@ $(document).ready(function() {
   })
   
   $('#complete-annotation').click(function() {
-    data = $.map(drawing.objects, function() { return this.data })
+    data = $.map(drawing.objects, function(elem) { return elem.data })
     $.post(location.href + '/annotations', JSON.stringify(data), function(responseData, status) {
       $('#overlay').remove()
       $('#drawing-board').hide()
     })
     
+    return false
+  })
+  
+  $('#cancel-annotation').click(function() {
+    $('#overlay').remove()
+    $('#drawing-board').hide()
+    return false
+  })
+  
+  $('a.show-annotation').click(function() {
+    id = $(this).attr("href").split("#")[1]
+    
+    $.getJSON(location.href + "/annotations/" + id, "", function(data) {
+      drawing = new Drawing()
+      $('<div id="overlay">').appendTo('body')
+
+      $('#annotation-view').show()
+
+      drawing.replaceImage('#annotation-view img')
+      drawing.register("Line", new Line(drawing))
+      drawing.register("Ellipse", new Ellipse(drawing))
+      $.each(data.elements, function(){ drawing._import(this) })
+    })
+    return false
+  })
+  
+  $('#close-annotation').click(function () {
+    $('#annotation-view').hide()
+    $('#overlay').remove()
+    $(drawing.paper.canvas).remove()
     return false
   })
 })
