@@ -39,4 +39,10 @@ namespace :deploy do
   task :restart do
     run "#{try_sudo} kill -s HUP `cat #{current_path}/tmp/pids/unicorn.pid`"
   end
+  
+  task :link_sockets do
+    run "ln -s #{shared_path}/sockets #{current_path}/tmp/sockets"
+  end
+  
+  after "deploy:update", "deploy:link_sockets"
 end
