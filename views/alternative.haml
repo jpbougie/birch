@@ -20,6 +20,11 @@
           %a.show-annotation{:href => "##{annotation.id}"}
             by
             = annotation.user.name
+            
+  - unless @activities.empty?
+    #activities
+      - for activity in @activities
+        %li= activity.text
 
 #comments
   %h4= "Comments (#{@alternative.comments.length})"

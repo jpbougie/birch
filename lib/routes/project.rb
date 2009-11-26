@@ -74,8 +74,8 @@ module Sinatra
         p.description = params[:project][:description]
         p.temp = false
         p.save
-        
-        # fetch the alternatives from the pending iteration
+                
+        Dam::Stream["project/#{p.id}"].instantiate!
 
         redirect project_url(p)
       end
@@ -110,6 +110,8 @@ module Sinatra
 
         alternative.asset = File.new(params[:"asset.path"])
         alternative.save!
+        
+        Dam::Stream["alternative/#{alternative.id}"].instantiate!
 
         {:project_id => project.id, :alternative_id => alternative.id}.to_json
 
@@ -138,7 +140,9 @@ module Sinatra
         
         @iteration = PendingIteration.find params[:iteration][:id]
         
-        @iteration.activate!
+        iteration = @iteration.activate!
+        
+        Dam::Stream["iteration/#{iteration.id}"].instantiate!
         
         redirect project_url(@project)
       end
@@ -192,8 +196,12 @@ module Sinatra
             @project.iterations.first(:order => "created_at desc")
           end
           
-          @iteration.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          comment = Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          
+          @iteration.comments << comment
           @iteration.save
+          
+          Dam.post(:comment_posted, :comment => comment, :project => @project)
           
           redirect project_url(@project)
           
@@ -236,6 +244,8 @@ module Sinatra
 
           @alternative = @iteration.alternatives.find(params[:alternative])
           not_found("Alternative could not be found") if @alternative.nil?
+          
+          @activities = Dam::Stream["alternative/#{@alternative.id}"].all
 
           haml :alternative, :locals => {:bodyid => "alternative-section"}
         end
@@ -253,8 +263,12 @@ module Sinatra
           @alternative = @iteration.alternatives.find(params[:alternative])
           not_found("Alternative could not be found") if @alternative.nil?
           
-          @alternative.comments << Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          comment = Comment.new(:user => current_user, :body => params[:body], :created_at => Time.now)
+          
+          @alternative.comments << comment
           @alternative.save
+          
+          Dam.post(:comment_posted, :comment => comment, :project => @project)
           
           redirect alternative_url(@alternative, project=@project, iteration=@iteration)
         end
@@ -275,6 +289,7 @@ module Sinatra
           unless @alternative.likes.include? current_user.id
             @alternative.likes << current_user.id
             @alternative.save
+            Dam.post(:alternative_liked, :user => current_user, :alternative => @alternative, :created_at => Time.now)
           end
           
           redirect alternative_url(@alternative, project=@project, iteration=@iteration)
@@ -314,8 +329,12 @@ module Sinatra
           puts elements.inspect
           elements.collect! {|elem| elem["_type"].constantize.new(elem)}
           
-          @alternative.annotations << Annotation.new(:user => current_user, :elements => elements)
+          annotation = Annotation.new(:user => current_user, :elements => elements)
+          
+          @alternative.annotations << annotation
           @alternative.save
+          
+          Dam.post(:annotation_created, :annotation => annotation)
           
           redirect alternative_url(@alternative, project=@project, iteration=@iteration) 
         end

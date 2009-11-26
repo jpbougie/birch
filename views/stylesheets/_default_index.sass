@@ -1,0 +1,18 @@
+@import 960/grid.sass
+@import compass/utilities/lists.sass
+
+body#default
+  
+  #header
+    margin-top: 2em
+    +alpha
+    +omega
+    +grid(16,16)
+    
+    h1
+      +grid(6, 16)
+      
+    ul#menu
+      +grid-prefix(2, 16)
+      +grid(8, 16)
+      +inline-list

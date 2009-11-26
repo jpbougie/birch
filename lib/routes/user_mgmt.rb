@@ -11,6 +11,7 @@ module Sinatra
         @user = User.new params[:user]
 
         if @user.save
+          Dam::Stream["user/#{@user.id}"].instantiate!
           login(@user)
           redirect "/"
         else

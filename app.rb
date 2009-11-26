@@ -8,6 +8,7 @@ require 'sass'
 require 'compass'
 require 'ninesixty'
 require 'baseline'
+require 'fancybuttons'
 
 require 'mongo_mapper'
 require 'yajl'
@@ -17,6 +18,7 @@ $: << File.join(File.dirname(__FILE__), 'lib')
 require 'carrierwave'
 require 'carrierwave/orm/mongomapper'
 
+require 'dam'
 
 configure do
   MongoMapper.database = "dev"
@@ -26,6 +28,8 @@ configure do
     config.project_path = File.dirname(__FILE__)
     config.sass_dir     = File.join('views', 'stylesheets')
   end
+  
+  Dam::Storage.database = Redis.new
 end
 
 enable :sessions
@@ -35,6 +39,9 @@ require 'annotations'
 require 'models'
 require 'auth'
 Dir['lib/routes/*.rb'].each {|route| require route}
+
+
+require 'activities'
 
 class App < Sinatra::Application
 
