@@ -226,6 +226,32 @@ module Sinatra
         
         redirect project_url(@project)
       end
+      
+      get "/invite/:secret" do
+        @invitation = Invitation.first(:conditions => {:secret => params[:secret]})
+        
+        if @invitation
+          # if the e-mail is already attached to an account, use that one
+          # otherwise, show the login form
+          if @user = User.find_by_email(@invitation.email)
+            # add the user to the project
+            p = @invitation.project
+            p.collaborators << @user
+            p.save!
+            
+            if @user == current_user
+              redirect project_url(p)
+            else
+              redirect "/login?next=" + project_url(p)
+            end
+          else
+            # signup and come back to this page
+            redirect "/signup?email=#{@invitation.email}&next=/invite/#{params[:secret]}"
+          end
+        else
+          halt 404
+        end
+      end
 
       # view an alternative
       [ "/:user/:project/iteration-:iteration/:alternative",

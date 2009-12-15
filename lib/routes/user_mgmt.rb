@@ -13,7 +13,7 @@ module Sinatra
         if @user.save
           Dam::Stream["user/#{@user.id}"].instantiate!
           login(@user)
-          redirect "/"
+          redirect(params[:next] || "/")
         else
           haml :sign_up
         end

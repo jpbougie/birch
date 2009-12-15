@@ -5,14 +5,22 @@ body#default
   
   #header
     margin-top: 2em
-    +alpha
-    +omega
     +grid(16,16)
     
     h1
+      +alpha
       +grid(6, 16)
       
     ul#menu
       +grid-prefix(2, 16)
       +grid(8, 16)
+      +omega
       +inline-list
+      
+  #description
+    +alpha
+    +omega
+    +grid(16, 16)
+    
+    p, #notice, h3
+      +grid(16, 16)

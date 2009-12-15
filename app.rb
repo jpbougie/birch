@@ -8,7 +8,7 @@ require 'sass'
 require 'compass'
 require 'ninesixty'
 require 'baseline'
-require 'fancybuttons'
+#require 'fancybuttons'
 
 require 'mongo_mapper'
 require 'yajl'
@@ -17,6 +17,8 @@ $: << File.join(File.dirname(__FILE__), 'lib')
 
 require 'carrierwave'
 require 'carrierwave/orm/mongomapper'
+
+require 'mail'
 
 require 'dam'
 
@@ -30,6 +32,14 @@ configure do
   end
   
   Dam::Storage.database = Redis.new
+  
+  Mail.defaults do
+    smtp "smtp.gmail.com" do
+      enable_tls
+      user "cropcircle@jpbougie.net"
+      pass "379P83"
+    end
+  end
 end
 
 enable :sessions

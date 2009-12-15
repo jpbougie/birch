@@ -17,13 +17,19 @@
 
 body
   color: #333
+  background-color: #eeeeee
+
+  #content
+    background-color: white
+    border: 1px solid #d0d0d0
+    border-top: 0
+    padding-bottom: 2em
   
 !highlight = "#2F72FF"
 
 #bar
-  background-color: #f0f0f0
+  background-color: #E2F2FA
   padding: 0px 0px 3px 5px
-  margin-bottom: 0.5em
   border-bottom: 1px solid #c5c5c5
   
   a
@@ -137,6 +143,11 @@ span.sect
   z-index: 5
   opacity: 0.6
   background: #000
+  
+#login-form
+  +alpha
+  +omega
+  +grid(16, 16)
 
 @import utils.sass
 

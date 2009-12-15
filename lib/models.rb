@@ -175,7 +175,14 @@ class Invitation
     # Pony.mail(:to => self.email, :from => "do-not-reply@corpcircleapp.com", 
     #           :subject => "An invitation to collaborate on Crop Circle from #{self.project.user.name}",
     #           :body => "http://www.cropcircleapp.com/invite/#{self.secret}")
-              
+    
+    Mail.deliver do
+           from 'cropcircle+donotreply@jpbougie.net'
+             to self.email
+        subject "#{self.project.user.name} invited you to collaborate on CropCircle"
+           body "Click on the following link to get started:\n\nhttp://www.cropcircleapp.com/invite/#{self.secret}"
+     end
+    
     self.status = "sent"
     self.save
   end

@@ -1,6 +1,8 @@
 %h2 Sign up to Project Birch
 #signup-form
   %form{:method => "POST"}
+    - if params[:next]
+      %input{:type => "hidden", :name => "next", :value => params[:next]}
     %label.width2
       Name
       %input#name{:type => "text", :name => "user[name]"}
@@ -9,7 +11,7 @@
       %input#username{:type => "text", :name => "user[username]"}
     %label.width2
       E-mail
-      %input#email{:type => "text", :name => "user[email]"}
+      %input#email{:type => "text", :name => "user[email]", :value => params[:email]}
     %label.width2
       Password
       %input#password{:type => "password", :name => "user[password]"}

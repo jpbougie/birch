@@ -1,8 +1,12 @@
-%form{:method => "post"}
-  username
-  %input#username{:type => "text", :name => "username"}
-  %br
-  Password
-  %input#password{:type => "password", :name => "password"}
-  %br
-  %input{:type => "submit", :value => "login"}
+%h2 Login to your account
+#login-form
+  %form{:method => "post"}
+    - if params[:next]
+      %input{:type => "hidden", :name => "next", :value => params[:next]}
+    username
+    %input#username{:type => "text", :name => "username"}
+    %br
+    Password
+    %input#password{:type => "password", :name => "password"}
+    %br
+    %input{:type => "submit", :value => "login"}

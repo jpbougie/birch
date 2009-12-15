@@ -59,13 +59,14 @@
           wrote, on
           = comment.created_at
         %p= comment.body
-  #comments-form
-    %h5 Comment on this iteration
-    %form{:method => "POST", :action => "/#{@project.user.username}/#{@project.slug}/comment"}
-      %label.width2
-        %textarea{:name => "body"}
-      %label
-        %button.button Send
+  - if @iteration.current?
+    #comments-form
+      %h5 Comment on this iteration
+      %form{:method => "POST", :action => "/#{@project.user.username}/#{@project.slug}/comment"}
+        %label.width2
+          %textarea{:name => "body"}
+        %label
+          %button.button Send
 
 :javascript
   $(function() {
